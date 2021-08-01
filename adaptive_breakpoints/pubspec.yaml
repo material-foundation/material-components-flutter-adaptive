@@ -1,16 +1,17 @@
 name: adaptive_breakpoints
 description: A Flutter package for adaptive breakpoints following the Material guidelines.
-version: 0.0.4
+version: 0.0.5
 homepage: https://github.com/material-components/material-components-flutter-adaptive
 
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
-  flutter: ^1.17.0
+  sdk: ">=2.12.0 <3.0.0"
+  flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
 
 dev_dependencies:
+  flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter
