@@ -155,7 +155,7 @@ const List<BreakpointSystemEntry> breakpointSystem = [
     margin: 16.0,
     gutter: 16.0,
   ),
-  const BreakpointSystemEntry(
+  BreakpointSystemEntry(
     range: RangeValues(360, 399),
     portrait: 'medium handset',
     adaptiveWindowType: AdaptiveWindowType.xsmall,
@@ -163,7 +163,7 @@ const List<BreakpointSystemEntry> breakpointSystem = [
     margin: 16.0,
     gutter: 16.0,
   ),
-  const BreakpointSystemEntry(
+  BreakpointSystemEntry(
     range: RangeValues(400, 479),
     portrait: 'large handset',
     adaptiveWindowType: AdaptiveWindowType.xsmall,
@@ -171,7 +171,7 @@ const List<BreakpointSystemEntry> breakpointSystem = [
     margin: 16.0,
     gutter: 16.0,
   ),
-  const BreakpointSystemEntry(
+  BreakpointSystemEntry(
     range: RangeValues(480, 599),
     portrait: 'large handset',
     landscape: 'small handset',
@@ -180,7 +180,7 @@ const List<BreakpointSystemEntry> breakpointSystem = [
     margin: 16.0,
     gutter: 16.0,
   ),
-  const BreakpointSystemEntry(
+  BreakpointSystemEntry(
     range: RangeValues(600, 719),
     portrait: 'small tablet',
     landscape: 'medium handset',
@@ -189,7 +189,7 @@ const List<BreakpointSystemEntry> breakpointSystem = [
     margin: 16.0,
     gutter: 16.0,
   ),
-  const BreakpointSystemEntry(
+  BreakpointSystemEntry(
     range: RangeValues(720, 839),
     portrait: 'large tablet',
     landscape: 'large handset',
@@ -198,7 +198,7 @@ const List<BreakpointSystemEntry> breakpointSystem = [
     margin: 24.0,
     gutter: 24.0,
   ),
-  const BreakpointSystemEntry(
+  BreakpointSystemEntry(
     range: RangeValues(840, 959),
     portrait: 'large tablet',
     landscape: 'large handset',
@@ -207,7 +207,7 @@ const List<BreakpointSystemEntry> breakpointSystem = [
     margin: 24.0,
     gutter: 24.0,
   ),
-  const BreakpointSystemEntry(
+  BreakpointSystemEntry(
     range: RangeValues(960, 1023),
     landscape: 'small tablet',
     adaptiveWindowType: AdaptiveWindowType.small,
@@ -215,7 +215,7 @@ const List<BreakpointSystemEntry> breakpointSystem = [
     margin: 24.0,
     gutter: 24.0,
   ),
-  const BreakpointSystemEntry(
+  BreakpointSystemEntry(
     range: RangeValues(1024, 1279),
     landscape: 'large tablet',
     adaptiveWindowType: AdaptiveWindowType.medium,
@@ -223,7 +223,7 @@ const List<BreakpointSystemEntry> breakpointSystem = [
     margin: 24.0,
     gutter: 24.0,
   ),
-  const BreakpointSystemEntry(
+  BreakpointSystemEntry(
     range: RangeValues(1280, 1439),
     landscape: 'large tablet',
     adaptiveWindowType: AdaptiveWindowType.medium,
@@ -231,7 +231,7 @@ const List<BreakpointSystemEntry> breakpointSystem = [
     margin: 24.0,
     gutter: 24.0,
   ),
-  const BreakpointSystemEntry(
+  BreakpointSystemEntry(
     range: RangeValues(1440, 1599),
     portrait: 'small handset',
     adaptiveWindowType: AdaptiveWindowType.large,
@@ -239,7 +239,7 @@ const List<BreakpointSystemEntry> breakpointSystem = [
     margin: 24.0,
     gutter: 24.0,
   ),
-  const BreakpointSystemEntry(
+  BreakpointSystemEntry(
     range: RangeValues(1600, 1919),
     portrait: 'small handset',
     adaptiveWindowType: AdaptiveWindowType.large,
@@ -247,7 +247,7 @@ const List<BreakpointSystemEntry> breakpointSystem = [
     margin: 24.0,
     gutter: 24.0,
   ),
-  const BreakpointSystemEntry(
+  BreakpointSystemEntry(
     range: RangeValues(1920, double.infinity),
     portrait: 'small handset',
     adaptiveWindowType: AdaptiveWindowType.xlarge,
