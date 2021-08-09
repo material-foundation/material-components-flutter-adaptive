@@ -1,6 +1,6 @@
 # [0.1.0] - August 9, 2021
 
-Big refactoring. Changes enums for classes
+**BREAKING CHANGE:** Big refactoring. Changes enums for classes
 
 # [0.0.5] - July 14, 2021
 
