@@ -73,9 +73,9 @@ class AdaptiveColumn extends StatelessWidget {
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         BreakpointSystemEntry _entry = getBreakpointEntry(context);
+        final contextWidth = MediaQuery.of(context).size.width;
         final double _margin = margin ?? _entry.margin;
         final double _gutter = gutter ?? _entry.gutter;
-
         return Container(
           margin: EdgeInsets.symmetric(horizontal: _margin),
           constraints: BoxConstraints(
@@ -83,6 +83,7 @@ class AdaptiveColumn extends StatelessWidget {
             maxWidth: _entry.adaptiveWindowType.widthRangeValues.end,
           ),
           child: Wrap(
+            key: ValueKey(_entry.columns),
             runSpacing: 8.0,
             children: () {
               int currentColumns = 0;
@@ -93,62 +94,75 @@ class AdaptiveColumn extends StatelessWidget {
               for (AdaptiveContainer child in this.children) {
                 // The if statement checks if the adaptiveContainer child fits
                 // within the adaptive constraints.
-                if (child.constraints.withinAdaptiveConstraint(context)) {
-                  row.add(child);
-                  currentColumns += child.columnSpan;
+                row.add(child);
+                currentColumns += child.columnSpan;
 
-                  if (currentColumns < _entry.columns) {
-                    totalGutters++;
-                  } else {
-                    if (currentColumns > _entry.columns) {
-                      totalGutters--;
-                    }
-                    int rowGutters = 0;
-                    for (AdaptiveContainer rowItem in row) {
-                      // Periodic width is the width of 1 column + 1 gutter.
-                      double periodicWidth =
-                          (MediaQuery.of(context).size.width -
-                                  _margin * 2 +
-                                  _gutter) /
-                              _entry.columns;
-
-                      // For a row item with a column span of k, its width is
-                      // k * column + (k - 1) * gutter, which equals
-                      // k * (column + gutter) - gutter, which is
-                      // k * periodicWidth - gutter.
-                      double maxWidth =
-                          periodicWidth * rowItem.columnSpan - _gutter;
-                      children.add(
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                            minWidth: maxWidth,
-                            maxWidth: maxWidth,
-                          ),
-                          child: rowItem,
-                        ),
-                      );
-
-                      if (rowGutters < totalGutters && 1 < row.length) {
-                        children.add(
-                          SizedBox(
-                            width: _gutter,
-                            child: Container(),
-                          ),
-                        );
-                        rowGutters++;
-                      }
-                    }
-                    totalGutters = 0;
-                    currentColumns = 0;
-                    row.clear();
-                  }
+                if (currentColumns < _entry.columns) {
+                  totalGutters++;
+                } else {
+                  buildRow(currentColumns, _entry, totalGutters, row,
+                      contextWidth, _margin, _gutter, children);
+                  totalGutters = 0;
+                  currentColumns = 0;
+                  row.clear();
                 }
               }
+              buildRow(currentColumns, _entry, totalGutters, row, contextWidth,
+                  _margin, _gutter, children);
+              totalGutters = 0;
+              currentColumns = 0;
+              row.clear();
               return children;
             }(),
           ),
         );
       },
     );
+  }
+
+  void buildRow(
+      int currentColumns,
+      BreakpointSystemEntry _entry,
+      int totalGutters,
+      List<AdaptiveContainer> row,
+      double contextWidth,
+      double _margin,
+      double _gutter,
+      List<Widget> children) {
+    if (currentColumns > _entry.columns) {
+      totalGutters--;
+    }
+    int rowGutters = 0;
+    for (AdaptiveContainer rowItem in row) {
+      // Periodic width is the width of 1 column + 1 gutter.
+
+      double periodicWidth =
+          (contextWidth - _margin * 2 + _gutter) / _entry.columns;
+
+      // For a row item with a column span of k, its width is
+      // k * column + (k - 1) * gutter, which equals
+      // k * (column + gutter) - gutter, which is
+      // k * periodicWidth - gutter.
+      double maxWidth = periodicWidth * rowItem.columnSpan - _gutter;
+      children.add(
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            minWidth: maxWidth,
+            maxWidth: maxWidth,
+          ),
+          child: rowItem,
+        ),
+      );
+
+      if (rowGutters < totalGutters && 1 < row.length) {
+        children.add(
+          SizedBox(
+            width: _gutter,
+            child: Container(),
+          ),
+        );
+        rowGutters++;
+      }
+    }
   }
 }
