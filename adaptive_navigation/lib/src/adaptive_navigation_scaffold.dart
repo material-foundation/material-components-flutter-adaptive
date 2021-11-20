@@ -226,6 +226,8 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
           ? null
           : _defaultDrawer(drawerDestinations, context),
       bottomNavigationBar: BottomNavigationBar(
+        selectedFontSize: 12,
+        unselectedFontSize: 12,
         items: [
           for (final destination in bottomDestinations)
             BottomNavigationBarItem(
@@ -305,32 +307,37 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
       key: key,
       body: body,
       appBar: appBar,
-      drawer: Drawer(
-        child: Column(
-          children: [
-            // TODO: Find a better way to write `drawerHeader!`
-            if (drawerHeader != null) drawerHeader!,
-            for (final destination in destinations)
-              ListTileTheme(
-                  dense: navRailMinWidth != null && navRailMinWidth! < 72
-                      ? true
-                      : false,
-                  horizontalTitleGap:
-                      navRailMinWidth != null && navRailMinWidth! < 72
-                          ? 0
-                          : null,
-                  textColor: Theme.of(context).unselectedWidgetColor,
-                  iconColor: Theme.of(context).unselectedWidgetColor,
-                  child: ListTile(
-                    leading: Icon(destination.icon),
-                    title: Text(destination.title),
-                    selected:
-                        destinations.indexOf(destination) == selectedIndex,
-                    onTap: () => _destinationTapped(destination),
-                  )),
-          ],
-        ),
-      ),
+      drawer: Container(
+          width: navRailMinWidth != null && navRailMinWidth! < 72 ? 160 : null,
+          child: Drawer(
+            child: Column(
+              children: [
+                // TODO: Find a better way to write `drawerHeader!`
+                if (drawerHeader != null) drawerHeader!,
+                for (final destination in destinations)
+                  ListTileTheme(
+                      dense: navRailMinWidth != null && navRailMinWidth! < 72
+                          ? true
+                          : false,
+                      horizontalTitleGap:
+                          navRailMinWidth != null && navRailMinWidth! < 72
+                              ? 0
+                              : null,
+                      textColor: Theme.of(context).unselectedWidgetColor,
+                      iconColor: Theme.of(context).unselectedWidgetColor,
+                      child: ListTile(
+                        leading: Icon(destination.icon),
+                        title: Text(destination.title),
+                        selected:
+                            destinations.indexOf(destination) == selectedIndex,
+                        onTap: () {
+                          _destinationTapped(destination);
+                          Navigator.of(context).pop();
+                        },
+                      )),
+              ],
+            ),
+          )),
       floatingActionButton: floatingActionButton,
       floatingActionButtonLocation: floatingActionButtonLocation,
       floatingActionButtonAnimator: floatingActionButtonAnimator,
