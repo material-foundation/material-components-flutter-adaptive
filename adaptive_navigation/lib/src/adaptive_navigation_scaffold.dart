@@ -332,7 +332,6 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
                             destinations.indexOf(destination) == selectedIndex,
                         onTap: () {
                           _destinationTapped(destination);
-                          Navigator.of(context).pop();
                         },
                       )),
               ],
