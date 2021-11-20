@@ -68,6 +68,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
     this.navigationTypeResolver,
     this.drawerHeader,
     this.fabInRail = true,
+    this.navRailMinWidth,
     this.includeBaseDestinationsInMenu = true,
   }) : super(key: key);
 
@@ -162,6 +163,9 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
   /// [floatingActionButtonAnimation] are ignored.
   final bool fabInRail;
 
+  /// 72 by default, 56 for compact, 48 for VS Code look
+  final double? navRailMinWidth;
+
   /// Weather the overflow menu defaults to include overflow destinations and
   /// the overflow destinations.
   final bool includeBaseDestinationsInMenu;
@@ -247,6 +251,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
       body: Row(
         children: [
           NavigationRail(
+            minWidth: navRailMinWidth,
             leading: fabInRail ? floatingActionButton : null,
             destinations: [
               for (final destination in railDestinations)
