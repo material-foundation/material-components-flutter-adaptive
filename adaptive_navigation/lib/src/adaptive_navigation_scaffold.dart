@@ -180,26 +180,35 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
     }
   }
 
-  Drawer _defaultDrawer(List<AdaptiveScaffoldDestination> destinations) {
+  Drawer _defaultDrawer(
+      List<AdaptiveScaffoldDestination> destinations, BuildContext context) {
     return Drawer(
       child: ListView(
         children: [
           // TODO: Find a better way to write `drawerHeader!`
           if (drawerHeader != null) drawerHeader!,
           for (int i = 0; i < destinations.length; i++)
-            ListTile(
-              leading: Icon(destinations[i].icon),
-              title: Text(destinations[i].title),
-              onTap: () {
-                onDestinationSelected?.call(i);
-              },
-            )
+            ListTileTheme(
+                dense: navRailMinWidth != null && navRailMinWidth! < 72
+                    ? true
+                    : false,
+                horizontalTitleGap:
+                    navRailMinWidth != null && navRailMinWidth! < 72 ? 0 : null,
+                textColor: Theme.of(context).unselectedWidgetColor,
+                iconColor: Theme.of(context).unselectedWidgetColor,
+                child: ListTile(
+                  leading: Icon(destinations[i].icon),
+                  title: Text(destinations[i].title),
+                  onTap: () {
+                    onDestinationSelected?.call(i);
+                  },
+                ))
         ],
       ),
     );
   }
 
-  Widget _buildBottomNavigationScaffold() {
+  Widget _buildBottomNavigationScaffold(BuildContext context) {
     const int bottomNavigationOverflow = 5;
     final bottomDestinations = destinations.sublist(
       0,
@@ -215,7 +224,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: drawerDestinations.isEmpty
           ? null
-          : _defaultDrawer(drawerDestinations),
+          : _defaultDrawer(drawerDestinations, context),
       bottomNavigationBar: BottomNavigationBar(
         items: [
           for (final destination in bottomDestinations)
@@ -232,7 +241,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
     );
   }
 
-  Widget _buildNavigationRailScaffold() {
+  Widget _buildNavigationRailScaffold(BuildContext context) {
     const int railDestinationsOverflow = 7;
     final railDestinations = destinations.sublist(
       0,
@@ -247,7 +256,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: drawerDestinations.isEmpty
           ? null
-          : _defaultDrawer(drawerDestinations),
+          : _defaultDrawer(drawerDestinations, context),
       body: Row(
         children: [
           NavigationRail(
@@ -291,7 +300,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
     );
   }
 
-  Widget _buildNavigationDrawerScaffold() {
+  Widget _buildNavigationDrawerScaffold(BuildContext context) {
     return Scaffold(
       key: key,
       body: body,
@@ -302,12 +311,23 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
             // TODO: Find a better way to write `drawerHeader!`
             if (drawerHeader != null) drawerHeader!,
             for (final destination in destinations)
-              ListTile(
-                leading: Icon(destination.icon),
-                title: Text(destination.title),
-                selected: destinations.indexOf(destination) == selectedIndex,
-                onTap: () => _destinationTapped(destination),
-              ),
+              ListTileTheme(
+                  dense: navRailMinWidth != null && navRailMinWidth! < 72
+                      ? true
+                      : false,
+                  horizontalTitleGap:
+                      navRailMinWidth != null && navRailMinWidth! < 72
+                          ? 0
+                          : null,
+                  textColor: Theme.of(context).unselectedWidgetColor,
+                  iconColor: Theme.of(context).unselectedWidgetColor,
+                  child: ListTile(
+                    leading: Icon(destination.icon),
+                    title: Text(destination.title),
+                    selected:
+                        destinations.indexOf(destination) == selectedIndex,
+                    onTap: () => _destinationTapped(destination),
+                  )),
           ],
         ),
       ),
@@ -330,7 +350,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
     );
   }
 
-  Widget _buildPermanentDrawerScaffold() {
+  Widget _buildPermanentDrawerScaffold(BuildContext context) {
     return Row(
       children: [
         Drawer(
@@ -339,12 +359,23 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
               // TODO: Find a better way to write `drawerHeader!`
               if (drawerHeader != null) drawerHeader!,
               for (final destination in destinations)
-                ListTile(
-                  leading: Icon(destination.icon),
-                  title: Text(destination.title),
-                  selected: destinations.indexOf(destination) == selectedIndex,
-                  onTap: () => _destinationTapped(destination),
-                ),
+                ListTileTheme(
+                    dense: navRailMinWidth != null && navRailMinWidth! < 72
+                        ? true
+                        : false,
+                    horizontalTitleGap:
+                        navRailMinWidth != null && navRailMinWidth! < 72
+                            ? 0
+                            : null,
+                    textColor: Theme.of(context).unselectedWidgetColor,
+                    iconColor: Theme.of(context).unselectedWidgetColor,
+                    child: ListTile(
+                      leading: Icon(destination.icon),
+                      title: Text(destination.title),
+                      selected:
+                          destinations.indexOf(destination) == selectedIndex,
+                      onTap: () => _destinationTapped(destination),
+                    )),
             ],
           ),
         ),
@@ -386,13 +417,13 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
     final navigationType = navigationTypeResolver(context);
     switch (navigationType) {
       case NavigationType.bottom:
-        return _buildBottomNavigationScaffold();
+        return _buildBottomNavigationScaffold(context);
       case NavigationType.rail:
-        return _buildNavigationRailScaffold();
+        return _buildNavigationRailScaffold(context);
       case NavigationType.drawer:
-        return _buildNavigationDrawerScaffold();
+        return _buildNavigationDrawerScaffold(context);
       case NavigationType.permanentDrawer:
-        return _buildPermanentDrawerScaffold();
+        return _buildPermanentDrawerScaffold(context);
     }
   }
 
