@@ -69,6 +69,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
     this.drawerHeader,
     this.fabInRail = true,
     this.includeBaseDestinationsInMenu = true,
+    this.allowTapOnSelectedIndex = false,
   }) : super(key: key);
 
   /// See [Scaffold.appBar].
@@ -165,6 +166,11 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
   /// Weather the overflow menu defaults to include overflow destinations and
   /// the overflow destinations.
   final bool includeBaseDestinationsInMenu;
+
+  /// Whether is allowed to tap on a tab already selected. If set to true,
+  /// [onDestinationSelected] will be called even if the tapped tab is 
+  /// already selected.
+  final bool allowTapOnSelectedIndex;
 
   NavigationType _defaultNavigationTypeResolver(BuildContext context) {
     if (_isLargeScreen(context)) {
@@ -393,7 +399,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
 
   void _destinationTapped(AdaptiveScaffoldDestination destination) {
     final index = destinations.indexOf(destination);
-    if (index != selectedIndex) {
+    if (index != selectedIndex || allowTapOnSelectedIndex) {
       onDestinationSelected?.call(index);
     }
   }
