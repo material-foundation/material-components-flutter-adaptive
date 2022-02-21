@@ -9,8 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  adaptive_breakpoints: ^0.0.4
-  adaptive_navigation: ^0.0.3
+  adaptive_breakpoints: ^0.1.1
+  adaptive_navigation: ^0.0.5
 
 dev_dependencies:
   flutter_test:
