@@ -16,6 +16,8 @@ class _DefaultScaffoldDemoState extends State<DefaultScaffoldDemo> {
   int _destinationCount = 5;
   bool _fabInRail = false;
   bool _includeBaseDestinationsInMenu = true;
+  NavigationRailLabelType _navigationRailLabelType =
+      NavigationRailLabelType.none;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +32,7 @@ class _DefaultScaffoldDemoState extends State<DefaultScaffoldDemo> {
       ),
       fabInRail: _fabInRail,
       includeBaseDestinationsInMenu: _includeBaseDestinationsInMenu,
+      navigationRailLabelType: _navigationRailLabelType,
     );
   }
 
@@ -83,6 +86,24 @@ class _DefaultScaffoldDemoState extends State<DefaultScaffoldDemo> {
             onPressed: () {
               Navigator.of(context).pushReplacementNamed('/');
             },
+          ),
+          const SizedBox(height: 40),
+          const Text('NavRail label type'),
+          SizedBox(
+            width: 200,
+            child: Column(
+              children: [
+                for (final type in NavigationRailLabelType.values)
+                  RadioListTile<NavigationRailLabelType>(
+                    value: type,
+                    groupValue: _navigationRailLabelType,
+                    onChanged: (newType) => setState(() =>
+                        _navigationRailLabelType =
+                            newType ?? NavigationRailLabelType.none),
+                    title: Text(type.name),
+                  ),
+              ],
+            ),
           ),
         ],
       ),

@@ -69,6 +69,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
     this.drawerHeader,
     this.fabInRail = true,
     this.includeBaseDestinationsInMenu = true,
+    this.navigationRailLabelType = NavigationRailLabelType.none,
   }) : super(key: key);
 
   /// See [Scaffold.appBar].
@@ -162,9 +163,13 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
   /// [floatingActionButtonAnimation] are ignored.
   final bool fabInRail;
 
-  /// Weather the overflow menu defaults to include overflow destinations and
+  /// Whether the overflow menu defaults to include overflow destinations and
   /// the overflow destinations.
   final bool includeBaseDestinationsInMenu;
+
+  /// When the navigation rail is displayed, this determines how the labels
+  /// are displayed.
+  final NavigationRailLabelType navigationRailLabelType;
 
   NavigationType _defaultNavigationTypeResolver(BuildContext context) {
     if (_isLargeScreen(context)) {
@@ -248,10 +253,14 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
         children: [
           NavigationRail(
             leading: fabInRail ? floatingActionButton : null,
+            labelType: navigationRailLabelType,
             destinations: [
               for (final destination in railDestinations)
                 NavigationRailDestination(
-                  icon: Icon(destination.icon),
+                  icon: Tooltip(
+                    message: destination.title,
+                    child: Icon(destination.icon),
+                  ),
                   label: Text(destination.title),
                 ),
             ],
@@ -293,17 +302,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
       appBar: appBar,
       drawer: Drawer(
         child: Column(
-          children: [
-            // TODO: Find a better way to write `drawerHeader!`
-            if (drawerHeader != null) drawerHeader!,
-            for (final destination in destinations)
-              ListTile(
-                leading: Icon(destination.icon),
-                title: Text(destination.title),
-                selected: destinations.indexOf(destination) == selectedIndex,
-                onTap: () => _destinationTapped(destination),
-              ),
-          ],
+          children: _buildDrawerItems(),
         ),
       ),
       floatingActionButton: floatingActionButton,
@@ -330,17 +329,7 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
       children: [
         Drawer(
           child: Column(
-            children: [
-              // TODO: Find a better way to write `drawerHeader!`
-              if (drawerHeader != null) drawerHeader!,
-              for (final destination in destinations)
-                ListTile(
-                  leading: Icon(destination.icon),
-                  title: Text(destination.title),
-                  selected: destinations.indexOf(destination) == selectedIndex,
-                  onTap: () => _destinationTapped(destination),
-                ),
-            ],
+            children: _buildDrawerItems(),
           ),
         ),
         const VerticalDivider(
@@ -372,6 +361,20 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  List<Widget> _buildDrawerItems() {
+    return [
+      // TODO: Find a better way to write `drawerHeader!`
+      if (drawerHeader != null) drawerHeader!,
+      for (final destination in destinations)
+        ListTile(
+          leading: Icon(destination.icon),
+          title: Text(destination.title),
+          selected: destinations.indexOf(destination) == selectedIndex,
+          onTap: () => _destinationTapped(destination),
+        ),
+    ];
   }
 
   @override
