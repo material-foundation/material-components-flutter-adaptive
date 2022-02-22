@@ -225,7 +225,10 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
               label: destination.title,
             ),
         ],
-        currentIndex: selectedIndex,
+        // TODO 0 is not the best choice here if the selectedIndex overflows,
+        //   but there is no "unselected" functionality.
+        currentIndex:
+            selectedIndex < bottomDestinations.length ? selectedIndex : 0,
         onTap: onDestinationSelected ?? (_) {},
         type: BottomNavigationBarType.fixed,
       ),
@@ -264,7 +267,10 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
                   label: Text(destination.title),
                 ),
             ],
-            selectedIndex: selectedIndex,
+            // TODO 0 is not the best choice here if the selectedIndex overflows,
+            //   but there is no "unselected" functionality.
+            selectedIndex:
+                selectedIndex < railDestinations.length ? selectedIndex : 0,
             onDestinationSelected: onDestinationSelected ?? (_) {},
           ),
           const VerticalDivider(
