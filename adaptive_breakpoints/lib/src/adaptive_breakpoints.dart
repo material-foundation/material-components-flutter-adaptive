@@ -18,18 +18,46 @@ enum AdaptiveWindowType {
   /// Name based on the [AdaptiveWindowType].
   ///
   /// Can be: xsmall, small, medium, large or xlarge
-  xsmall(0, RangeValues(0, 599), RangeValues(0, 359), RangeValues(0, 959)),
+  xsmall(
+    0,
+    RangeValues(0, 599),
+    RangeValues(0, 359),
+    RangeValues(0, 959),
+  ),
   small(
-      1, RangeValues(600, 1023), RangeValues(360, 719), RangeValues(360, 1599)),
-  medium(2, RangeValues(1024, 1439), RangeValues(720, 959),
-      RangeValues(720, 1919)),
-  large(3, RangeValues(1440, 1919), RangeValues(960, 1279),
-      RangeValues(1920, double.infinity)),
-  xlarge(4, RangeValues(1920, double.infinity),
-      RangeValues(1280, double.infinity), RangeValues(1920, double.infinity));
+    1,
+    RangeValues(600, 1023),
+    RangeValues(360, 719),
+    RangeValues(360, 1599),
+  ),
+  medium(
+    2,
+    RangeValues(1024, 1439),
+    RangeValues(720, 959),
+    RangeValues(720, 1919),
+  ),
+  large(
+    3,
+    RangeValues(1440, 1919),
+    RangeValues(960, 1279),
+    RangeValues(1920, double.infinity),
+  ),
+  xlarge(
+    4,
+    RangeValues(
+      1920,
+      double.infinity,
+    ),
+    RangeValues(1280, double.infinity),
+    RangeValues(1920, double.infinity),
+  );
 
-  const AdaptiveWindowType(this.relativeSize, this.widthRangeValues,
-      this.heightLandscapeRangeValues, this.heightPortraitRangeValues);
+  const AdaptiveWindowType(
+    this.relativeSize,
+    this.widthRangeValues,
+    this.heightLandscapeRangeValues,
+    this.heightPortraitRangeValues,
+  );
 
   /// Used to set custom comparison operators for the [AdaptiveWindowType] enum.
   final int relativeSize;
