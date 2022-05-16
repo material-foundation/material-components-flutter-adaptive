@@ -44,10 +44,7 @@ enum AdaptiveWindowType {
   ),
   xlarge(
     4,
-    RangeValues(
-      1920,
-      double.infinity,
-    ),
+    RangeValues(1920, double.infinity),
     RangeValues(1280, double.infinity),
     RangeValues(1920, double.infinity),
   );
