@@ -13,19 +13,23 @@ import 'package:flutter/material.dart';
 /// Extra large represents large computer screens.
 ///
 /// https://material.io/design/layout/responsive-layout-grid.html#breakpoints
-class AdaptiveWindowType {
-  const AdaptiveWindowType._({
-    required this.name,
-    required this.relativeSize,
-    required this.widthRangeValues,
-    required this.heightLandscapeRangeValues,
-    required this.heightPortraitRangeValues,
-  });
 
+enum AdaptiveWindowType {
   /// Name based on the [AdaptiveWindowType].
   ///
   /// Can be: xsmall, small, medium, large or xlarge
-  final String name;
+  xsmall(0, RangeValues(0, 599), RangeValues(0, 359), RangeValues(0, 959)),
+  small(
+      1, RangeValues(600, 1023), RangeValues(360, 719), RangeValues(360, 1599)),
+  medium(2, RangeValues(1024, 1439), RangeValues(720, 959),
+      RangeValues(720, 1919)),
+  large(3, RangeValues(1440, 1919), RangeValues(960, 1279),
+      RangeValues(1920, double.infinity)),
+  xlarge(4, RangeValues(1920, double.infinity),
+      RangeValues(1280, double.infinity), RangeValues(1920, double.infinity));
+
+  const AdaptiveWindowType(this.relativeSize, this.widthRangeValues,
+      this.heightLandscapeRangeValues, this.heightPortraitRangeValues);
 
   /// Used to set custom comparison operators for the [AdaptiveWindowType] enum.
   final int relativeSize;
@@ -38,46 +42,6 @@ class AdaptiveWindowType {
 
   /// Valid range of height for this window type on portrait mode.
   final RangeValues heightPortraitRangeValues;
-
-  static const AdaptiveWindowType xsmall = AdaptiveWindowType._(
-    name: 'xsmall',
-    relativeSize: 0,
-    widthRangeValues: RangeValues(0, 599),
-    heightLandscapeRangeValues: RangeValues(0, 359),
-    heightPortraitRangeValues: RangeValues(0, 959),
-  );
-
-  static const AdaptiveWindowType small = AdaptiveWindowType._(
-    name: 'small',
-    relativeSize: 1,
-    widthRangeValues: RangeValues(600, 1023),
-    heightLandscapeRangeValues: RangeValues(360, 719),
-    heightPortraitRangeValues: RangeValues(360, 1599),
-  );
-
-  static const AdaptiveWindowType medium = AdaptiveWindowType._(
-    name: 'medium',
-    relativeSize: 2,
-    widthRangeValues: RangeValues(1024, 1439),
-    heightLandscapeRangeValues: RangeValues(720, 959),
-    heightPortraitRangeValues: RangeValues(720, 1919),
-  );
-
-  static const AdaptiveWindowType large = AdaptiveWindowType._(
-    name: 'large',
-    relativeSize: 3,
-    widthRangeValues: RangeValues(1440, 1919),
-    heightLandscapeRangeValues: RangeValues(960, 1279),
-    heightPortraitRangeValues: RangeValues(1920, double.infinity),
-  );
-
-  static const AdaptiveWindowType xlarge = AdaptiveWindowType._(
-    name: 'xlarge',
-    relativeSize: 4,
-    widthRangeValues: RangeValues(1920, double.infinity),
-    heightLandscapeRangeValues: RangeValues(1280, double.infinity),
-    heightPortraitRangeValues: RangeValues(1920, double.infinity),
-  );
 
   bool operator <=(AdaptiveWindowType other) =>
       relativeSize <= other.relativeSize;
