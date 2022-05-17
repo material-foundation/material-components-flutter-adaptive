@@ -88,9 +88,8 @@ class AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
       toolbarOpacity: toolbarOpacity,
       bottomOpacity: bottomOpacity,
       toolbarHeight: toolbarHeight,
-      // TODO(https://github.com/material-components/material-components-flutter-adaptive/issues/2):
-      // This needs to depend on whether the rail is showing or not.
-      leadingWidth: 72.0,
+      // TODO Change to work correctly on xsmall window as well
+      leadingWidth: leadingWidth ?? 72.0,
       toolbarTextStyle: toolbarTextStyle,
       titleTextStyle: titleTextStyle,
       systemOverlayStyle: systemOverlayStyle,
