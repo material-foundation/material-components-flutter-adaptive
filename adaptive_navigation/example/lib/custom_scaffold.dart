@@ -18,7 +18,10 @@ class _CustomScaffoldDemoState extends State<CustomScaffoldDemo> {
     return AdaptiveNavigationScaffold(
       selectedIndex: 0,
       destinations: _allDestinations.sublist(0, _destinationCount),
-      appBar: AdaptiveAppBar(title: const Text('Custom Demo')),
+      appBar: AdaptiveAppBar(
+        title: const Text('Custom Demo'),
+        leading: const Icon(Icons.menu),
+      ),
       body: _body(),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),

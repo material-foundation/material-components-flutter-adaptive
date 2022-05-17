@@ -22,7 +22,10 @@ class _DefaultScaffoldDemoState extends State<DefaultScaffoldDemo> {
     return AdaptiveNavigationScaffold(
       selectedIndex: 0,
       destinations: _allDestinations.sublist(0, _destinationCount),
-      appBar: AdaptiveAppBar(title: const Text('Default Demo')),
+      appBar: AdaptiveAppBar(
+        title: const Text('Default Demo'),
+        leading: const Icon(Icons.menu),
+      ),
       body: _body(),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
