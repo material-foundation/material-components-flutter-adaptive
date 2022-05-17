@@ -45,10 +45,51 @@ void main() {
 
     await tester.pumpWidget(
       MaterialApp(
+        theme: ThemeData(useMaterial3: false),
         home: AdaptiveNavigationScaffold(
           selectedIndex: 0,
           destinations: _allDestinations,
           appBar: AdaptiveAppBar(
+            title: const Text('Default Demo'),
+            leading: const Icon(
+              Icons.more_vert,
+              key: Key('target'),
+            ),
+          ),
+          floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () {},
+          ),
+          body: Container(
+            color: Colors.green,
+          ),
+          navigationTypeResolver: (context) {
+            return NavigationType.rail;
+          },
+        ),
+      ),
+    );
+
+    expect(
+      tester.getCenter(find.byKey(const Key('target'))).dx,
+      tester.getCenter(find.byIcon(Icons.alarm)).dx,
+    );
+  });
+
+  testWidgets('Adaptive App Bar leading icon axis test with Material3',
+      (WidgetTester tester) async {
+    const xlargeWindowSize = Size(1920, 1080);
+    tester.binding.window.physicalSizeTestValue = xlargeWindowSize;
+    tester.binding.window.devicePixelRatioTestValue = 1.0;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        theme: ThemeData(useMaterial3: true),
+        home: AdaptiveNavigationScaffold(
+          selectedIndex: 0,
+          destinations: _allDestinations,
+          appBar: AdaptiveAppBar(
+            leadingWidth: 80,
             title: const Text('Default Demo'),
             leading: const Icon(
               Icons.more_vert,

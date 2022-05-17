@@ -67,6 +67,13 @@ class AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    double setLeadingWidth() {
+      if (leadingWidth != null) {
+        return leadingWidth!;
+      }
+      return Theme.of(context).useMaterial3 ? 80.0 : 72.0;
+    }
+
     return AppBar(
       key: key,
       leading: leading,
@@ -89,7 +96,8 @@ class AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
       bottomOpacity: bottomOpacity,
       toolbarHeight: toolbarHeight,
       // TODO Change to work correctly on xsmall window as well
-      leadingWidth: leadingWidth ?? 72.0,
+      leadingWidth: setLeadingWidth(),
+      // leadingWidth ?? Theme.of(context).useMaterial3 ? 80.0 : 72.0,
       toolbarTextStyle: toolbarTextStyle,
       titleTextStyle: titleTextStyle,
       systemOverlayStyle: systemOverlayStyle,
