@@ -1,5 +1,9 @@
 ## 0.0.7 - May 23, 2022
 
+- Add path property to `AdaptiveScaffoldDestination` to use for routing.
+
+## 0.0.7 - May 23, 2022
+
 - Tweaked pubspec description.
 - Polished README.
 - Updated dependencies.

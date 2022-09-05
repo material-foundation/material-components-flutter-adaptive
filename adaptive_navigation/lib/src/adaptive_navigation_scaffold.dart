@@ -31,10 +31,12 @@ enum NavigationType {
 class AdaptiveScaffoldDestination {
   final String title;
   final IconData icon;
+  final String? path;
 
   const AdaptiveScaffoldDestination({
     required this.title,
     required this.icon,
+    this.path,
   });
 }
 
