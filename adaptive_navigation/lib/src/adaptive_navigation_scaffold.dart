@@ -2,12 +2,16 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
-import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
-import 'package:adaptive_breakpoints/adaptive_breakpoints.dart';
 import 'dart:math' as math;
 
+import 'package:adaptive_breakpoints/adaptive_breakpoints.dart';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
+
 typedef NavigationTypeResolver = NavigationType Function(BuildContext context);
+
+typedef AppBarBuilder = PreferredSizeWidget? Function(
+    BuildContext context, NavigationType navigationType);
 
 // The navigation mechanism to configure the [Scaffold] with.
 enum NavigationType {
@@ -43,7 +47,7 @@ class AdaptiveScaffoldDestination {
 /// A widget that adapts to the current display size, displaying a [Drawer],
 /// [NavigationRail], or [BottomNavigationBar]. Navigation destinations are
 /// defined in the [destinations] parameter.
-class AdaptiveNavigationScaffold extends StatelessWidget {
+class AdaptiveNavigationScaffold extends StatefulWidget {
   const AdaptiveNavigationScaffold({
     Key? key,
     this.appBar,
@@ -68,10 +72,15 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
     required this.destinations,
     this.onDestinationSelected,
     this.navigationTypeResolver,
+    this.appBarBuilder,
     this.drawerHeader,
+    this.navigationRailTrailing,
+    this.permanentDrawerTrailing,
     this.fabInRail = true,
+    this.fabInPermanentDrawer = true,
     this.includeBaseDestinationsInMenu = true,
     this.bottomNavigationOverflow = 5,
+    this.railDestinationsOverflow = 7,
   }) : super(key: key);
 
   /// See [Scaffold.appBar].
@@ -153,10 +162,25 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
   /// Determines the navigation type that the scaffold uses.
   final NavigationTypeResolver? navigationTypeResolver;
 
+  /// Builder for appBar according to navigation type of the scaffold.
+  ///
+  /// If null, [appBar] is used for all navigation types.
+  final AppBarBuilder? appBarBuilder;
+
   /// The leading item in the drawer when the navigation has a drawer.
   ///
   /// If null, then there is no header.
   final Widget? drawerHeader;
+
+  /// The trailing widget in the NavigationRail
+  ///
+  /// If null, then there is no trailing
+  final Widget? navigationRailTrailing;
+
+  /// The trailing widget in the permanent drawer
+  ///
+  /// If null, then there is no trailing
+  final Widget? permanentDrawerTrailing;
 
   /// Whether the [floatingActionButton] is inside or the rail or in the regular
   /// spot.
@@ -165,13 +189,42 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
   /// [floatingActionButtonAnimation] are ignored.
   final bool fabInRail;
 
+  /// Whether the [floatingActionButton] is inside the permanent drawer or in the regular
+  /// spot.
+  ///
+  /// If true, then [floatingActionButtonLocation] and
+  /// [floatingActionButtonAnimation] are ignored.
+  final bool fabInPermanentDrawer;
+
   /// Weather the overflow menu defaults to include overflow destinations and
   /// the overflow destinations.
   final bool includeBaseDestinationsInMenu;
 
-  /// Maximum number of items to display in [bottomNavigationBar]
+  /// Maximum number of items to display in [BottomNavigationBar].
+  ///
+  /// Defaults to 5.
   final int bottomNavigationOverflow;
 
+  /// Maximum number of items to display in [NavigationRail].
+  ///
+  /// Defaults to 7.
+  final int railDestinationsOverflow;
+
+  static AdaptiveNavigationScaffoldState of(BuildContext context) {
+    final state =
+        context.findAncestorStateOfType<AdaptiveNavigationScaffoldState>();
+    assert(state != null,
+        'No AdaptiveNavigationScaffoldState found in the context');
+    return state!;
+  }
+
+  @override
+  State<AdaptiveNavigationScaffold> createState() =>
+      AdaptiveNavigationScaffoldState();
+}
+
+class AdaptiveNavigationScaffoldState
+    extends State<AdaptiveNavigationScaffold> {
   NavigationType _defaultNavigationTypeResolver(BuildContext context) {
     if (_isLargeScreen(context)) {
       return NavigationType.permanentDrawer;
@@ -182,17 +235,19 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
     }
   }
 
+  PreferredSizeWidget? appBar;
+
   Drawer _defaultDrawer(List<AdaptiveScaffoldDestination> destinations) {
     return Drawer(
       child: ListView(
         children: [
-          if (drawerHeader != null) drawerHeader!,
+          if (widget.drawerHeader != null) widget.drawerHeader!,
           for (int i = 0; i < destinations.length; i++)
             ListTile(
               leading: Icon(destinations[i].icon),
               title: Text(destinations[i].title),
               onTap: () {
-                onDestinationSelected?.call(i);
+                widget.onDestinationSelected?.call(i);
               },
             )
         ],
@@ -201,19 +256,21 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
   }
 
   Widget _buildBottomNavigationScaffold() {
-    final bottomDestinations = destinations.sublist(
+    final bottomDestinations = widget.destinations.sublist(
       0,
-      math.min(destinations.length, bottomNavigationOverflow),
+      math.min(widget.destinations.length, widget.bottomNavigationOverflow),
     );
-    final drawerDestinations = destinations.length > bottomNavigationOverflow
-        ? destinations.sublist(
-            includeBaseDestinationsInMenu ? 0 : bottomNavigationOverflow)
-        : <AdaptiveScaffoldDestination>[];
+    final drawerDestinations =
+        widget.destinations.length > widget.bottomNavigationOverflow
+            ? widget.destinations.sublist(widget.includeBaseDestinationsInMenu
+                ? 0
+                : widget.bottomNavigationOverflow)
+            : <AdaptiveScaffoldDestination>[];
     return Scaffold(
-      key: key,
-      body: body,
+      key: widget.key,
+      body: widget.body,
       appBar: appBar,
-      drawer: drawerDestinations.isEmpty
+      drawer: Navigator.of(context).canPop() || drawerDestinations.isEmpty
           ? null
           : _defaultDrawer(drawerDestinations),
       bottomNavigationBar: BottomNavigationBar(
@@ -224,107 +281,123 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
               label: destination.title,
             ),
         ],
-        currentIndex: selectedIndex,
-        onTap: onDestinationSelected ?? (_) {},
+        currentIndex: widget.selectedIndex,
+        onTap: widget.onDestinationSelected ?? (_) {},
         type: BottomNavigationBarType.fixed,
       ),
-      floatingActionButton: floatingActionButton,
+      floatingActionButton: widget.floatingActionButton,
+      floatingActionButtonLocation: widget.floatingActionButtonLocation,
+      floatingActionButtonAnimator: widget.floatingActionButtonAnimator,
     );
   }
 
   Widget _buildNavigationRailScaffold() {
-    const int railDestinationsOverflow = 7;
-    final railDestinations = destinations.sublist(
+    final railDestinations = widget.destinations.sublist(
       0,
-      math.min(destinations.length, railDestinationsOverflow),
+      math.min(widget.destinations.length, widget.railDestinationsOverflow),
     );
-    final drawerDestinations = destinations.length > railDestinationsOverflow
-        ? destinations.sublist(
-            includeBaseDestinationsInMenu ? 0 : railDestinationsOverflow)
-        : <AdaptiveScaffoldDestination>[];
+    final drawerDestinations =
+        widget.destinations.length > widget.railDestinationsOverflow
+            ? widget.destinations.sublist(widget.includeBaseDestinationsInMenu
+                ? 0
+                : widget.railDestinationsOverflow)
+            : <AdaptiveScaffoldDestination>[];
     return Scaffold(
-      key: key,
-      appBar: appBar,
-      drawer: drawerDestinations.isEmpty
+      drawer: Navigator.of(context).canPop() || drawerDestinations.isEmpty
           ? null
           : _defaultDrawer(drawerDestinations),
-      body: Row(
-        children: [
-          NavigationRail(
-            leading: fabInRail ? floatingActionButton : null,
-            destinations: [
-              for (final destination in railDestinations)
-                NavigationRailDestination(
-                  icon: Icon(destination.icon),
-                  label: Text(destination.title),
-                ),
-            ],
-            selectedIndex: selectedIndex,
-            onDestinationSelected: onDestinationSelected ?? (_) {},
-          ),
-          const VerticalDivider(
-            width: 1,
-            thickness: 1,
-          ),
-          Expanded(
-            child: body,
-          ),
-        ],
-      ),
-      floatingActionButton: fabInRail ? null : floatingActionButton,
-      floatingActionButtonLocation: floatingActionButtonLocation,
-      floatingActionButtonAnimator: floatingActionButtonAnimator,
-      persistentFooterButtons: persistentFooterButtons,
-      endDrawer: endDrawer,
-      bottomSheet: bottomSheet,
-      backgroundColor: backgroundColor,
-      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-      primary: true,
-      drawerDragStartBehavior: drawerDragStartBehavior,
-      extendBody: extendBody,
-      extendBodyBehindAppBar: extendBodyBehindAppBar,
-      drawerScrimColor: drawerScrimColor,
-      drawerEdgeDragWidth: drawerEdgeDragWidth,
-      drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
-      endDrawerEnableOpenDragGesture: endDrawerEnableOpenDragGesture,
+      body: Builder(builder: (context) {
+        return Row(
+          children: [
+            NavigationRail(
+              leading: Navigator.of(context).canPop() ||
+                      widget.fabInRail ||
+                      drawerDestinations.isNotEmpty
+                  ? Column(
+                      children: [
+                        if (drawerDestinations.isNotEmpty ||
+                            Navigator.of(context).canPop())
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: Navigator.of(context).canPop()
+                                ? const BackButton()
+                                : IconButton(
+                                    onPressed: () =>
+                                        Scaffold.of(context).openDrawer(),
+                                    icon: const Icon(Icons.menu)),
+                          ),
+                        if (widget.fabInRail &&
+                            widget.floatingActionButton != null)
+                          widget.floatingActionButton!,
+                      ],
+                    )
+                  : null,
+              destinations: [
+                for (final destination in railDestinations)
+                  NavigationRailDestination(
+                    icon: Icon(destination.icon),
+                    label: Text(destination.title),
+                  ),
+              ],
+              trailing: widget.navigationRailTrailing,
+              selectedIndex: widget.selectedIndex,
+              onDestinationSelected: widget.onDestinationSelected ?? (_) {},
+            ),
+            Expanded(
+              child: Scaffold(
+                key: widget.key,
+                appBar: appBar,
+                floatingActionButton:
+                    widget.fabInRail ? null : widget.floatingActionButton,
+                floatingActionButtonLocation:
+                    widget.floatingActionButtonLocation,
+                floatingActionButtonAnimator:
+                    widget.floatingActionButtonAnimator,
+                body: widget.body,
+              ),
+            ),
+          ],
+        );
+      }),
     );
   }
 
   Widget _buildNavigationDrawerScaffold() {
     return Scaffold(
-      key: key,
-      body: body,
+      key: widget.key,
+      body: widget.body,
       appBar: appBar,
       drawer: Drawer(
         child: Column(
           children: [
-            if (drawerHeader != null) drawerHeader!,
-            for (final destination in destinations)
+            if (widget.drawerHeader != null) widget.drawerHeader!,
+            for (final destination in widget.destinations)
               ListTile(
                 leading: Icon(destination.icon),
                 title: Text(destination.title),
-                selected: destinations.indexOf(destination) == selectedIndex,
+                selected: widget.destinations.indexOf(destination) ==
+                    widget.selectedIndex,
                 onTap: () => _destinationTapped(destination),
               ),
           ],
         ),
       ),
-      floatingActionButton: floatingActionButton,
-      floatingActionButtonLocation: floatingActionButtonLocation,
-      floatingActionButtonAnimator: floatingActionButtonAnimator,
-      persistentFooterButtons: persistentFooterButtons,
-      endDrawer: endDrawer,
-      bottomSheet: bottomSheet,
-      backgroundColor: backgroundColor,
-      resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+      floatingActionButton: widget.floatingActionButton,
+      floatingActionButtonLocation: widget.floatingActionButtonLocation,
+      floatingActionButtonAnimator: widget.floatingActionButtonAnimator,
+      persistentFooterButtons: widget.persistentFooterButtons,
+      endDrawer: widget.endDrawer,
+      bottomSheet: widget.bottomSheet,
+      backgroundColor: widget.backgroundColor,
+      resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
       primary: true,
-      drawerDragStartBehavior: drawerDragStartBehavior,
-      extendBody: extendBody,
-      extendBodyBehindAppBar: extendBodyBehindAppBar,
-      drawerScrimColor: drawerScrimColor,
-      drawerEdgeDragWidth: drawerEdgeDragWidth,
-      drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
-      endDrawerEnableOpenDragGesture: endDrawerEnableOpenDragGesture,
+      drawerDragStartBehavior: widget.drawerDragStartBehavior,
+      extendBody: widget.extendBody,
+      extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+      drawerScrimColor: widget.drawerScrimColor,
+      drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
+      drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
+      endDrawerEnableOpenDragGesture: widget.endDrawerEnableOpenDragGesture,
     );
   }
 
@@ -333,54 +406,76 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
       children: [
         Drawer(
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              if (drawerHeader != null) drawerHeader!,
-              for (final destination in destinations)
-                ListTile(
-                  leading: Icon(destination.icon),
-                  title: Text(destination.title),
-                  selected: destinations.indexOf(destination) == selectedIndex,
-                  onTap: () => _destinationTapped(destination),
+              if (widget.drawerHeader != null) widget.drawerHeader!,
+              if (widget.fabInPermanentDrawer &&
+                  widget.floatingActionButton != null)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: widget.floatingActionButton,
                 ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      for (final destination in widget.destinations)
+                        ListTile(
+                          leading: Icon(destination.icon),
+                          title: Text(destination.title),
+                          selected: widget.destinations.indexOf(destination) ==
+                              widget.selectedIndex,
+                          onTap: () => _destinationTapped(destination),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              if (widget.permanentDrawerTrailing != null)
+                widget.permanentDrawerTrailing!,
             ],
           ),
         ),
-        const VerticalDivider(
-          width: 1,
-          thickness: 1,
-        ),
         Expanded(
           child: Scaffold(
-            key: key,
+            key: widget.key,
             appBar: appBar,
-            body: body,
-            floatingActionButton: floatingActionButton,
-            floatingActionButtonLocation: floatingActionButtonLocation,
-            floatingActionButtonAnimator: floatingActionButtonAnimator,
-            persistentFooterButtons: persistentFooterButtons,
-            endDrawer: endDrawer,
-            bottomSheet: bottomSheet,
-            backgroundColor: backgroundColor,
-            resizeToAvoidBottomInset: resizeToAvoidBottomInset,
+            body: widget.body,
+            floatingActionButton: widget.fabInPermanentDrawer
+                ? null
+                : widget.floatingActionButton,
+            floatingActionButtonLocation: widget.floatingActionButtonLocation,
+            floatingActionButtonAnimator: widget.floatingActionButtonAnimator,
+            persistentFooterButtons: widget.persistentFooterButtons,
+            endDrawer: widget.endDrawer,
+            bottomSheet: widget.bottomSheet,
+            backgroundColor: widget.backgroundColor,
+            resizeToAvoidBottomInset: widget.resizeToAvoidBottomInset,
             primary: true,
-            drawerDragStartBehavior: drawerDragStartBehavior,
-            extendBody: extendBody,
-            extendBodyBehindAppBar: extendBodyBehindAppBar,
-            drawerScrimColor: drawerScrimColor,
-            drawerEdgeDragWidth: drawerEdgeDragWidth,
-            drawerEnableOpenDragGesture: drawerEnableOpenDragGesture,
-            endDrawerEnableOpenDragGesture: endDrawerEnableOpenDragGesture,
+            drawerDragStartBehavior: widget.drawerDragStartBehavior,
+            extendBody: widget.extendBody,
+            extendBodyBehindAppBar: widget.extendBodyBehindAppBar,
+            drawerScrimColor: widget.drawerScrimColor,
+            drawerEdgeDragWidth: widget.drawerEdgeDragWidth,
+            drawerEnableOpenDragGesture: widget.drawerEnableOpenDragGesture,
+            endDrawerEnableOpenDragGesture:
+                widget.endDrawerEnableOpenDragGesture,
           ),
         ),
       ],
     );
   }
 
+  late NavigationType navigationType;
+
   @override
   Widget build(BuildContext context) {
     final NavigationTypeResolver navigationTypeResolver =
-        this.navigationTypeResolver ?? _defaultNavigationTypeResolver;
-    final navigationType = navigationTypeResolver(context);
+        widget.navigationTypeResolver ?? _defaultNavigationTypeResolver;
+    navigationType = navigationTypeResolver(context);
+    appBar = widget.appBarBuilder != null
+        ? widget.appBarBuilder!(context, navigationType)
+        : widget.appBar;
     switch (navigationType) {
       case NavigationType.bottom:
         return _buildBottomNavigationScaffold();
@@ -394,14 +489,15 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
   }
 
   void _destinationTapped(AdaptiveScaffoldDestination destination) {
-    final index = destinations.indexOf(destination);
-    if (index != selectedIndex) {
-      onDestinationSelected?.call(index);
+    final index = widget.destinations.indexOf(destination);
+    if (index != widget.selectedIndex) {
+      widget.onDestinationSelected?.call(index);
     }
   }
 }
 
 bool _isLargeScreen(BuildContext context) =>
     getWindowType(context) >= AdaptiveWindowType.large;
+
 bool _isMediumScreen(BuildContext context) =>
     getWindowType(context) == AdaptiveWindowType.medium;

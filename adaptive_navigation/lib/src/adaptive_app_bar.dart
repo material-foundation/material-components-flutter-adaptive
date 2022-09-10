@@ -2,12 +2,14 @@
 // for details. All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
+import 'package:adaptive_navigation/adaptive_navigation.dart';
 import 'package:flutter/material.dart';
-import 'package:adaptive_breakpoints/adaptive_breakpoints.dart';
 import 'package:flutter/services.dart';
 
-/// AdaptiveAppBar has a leading width of 72.0. Everything else is the same as
-/// [AppBar].
+/// AdaptiveAppBar works only inside a [AdaptiveNavigationScaffold]
+/// and has [automaticallyImplyLeading] set to false when
+/// navigation type is rail as it is shown inside the rail instead.
+/// Everything else is the same as [AppBar].
 class AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
   AdaptiveAppBar({
     Key? key,
@@ -70,7 +72,11 @@ class AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
       key: key,
       leading: leading,
-      automaticallyImplyLeading: automaticallyImplyLeading,
+      automaticallyImplyLeading:
+          AdaptiveNavigationScaffold.of(context).navigationType ==
+                  NavigationType.rail
+              ? false
+              : automaticallyImplyLeading,
       title: title,
       actions: actions,
       flexibleSpace: flexibleSpace,
@@ -88,10 +94,7 @@ class AdaptiveAppBar extends StatelessWidget implements PreferredSizeWidget {
       toolbarOpacity: toolbarOpacity,
       bottomOpacity: bottomOpacity,
       toolbarHeight: toolbarHeight,
-      // TODO(https://github.com/material-components/material-components-flutter-adaptive/issues/2):
-      // This needs to depend on whether the rail is showing or not.
-      leadingWidth:
-          getWindowType(context) == AdaptiveWindowType.medium ? 72.0 : 56.0,
+      leadingWidth: leadingWidth,
       toolbarTextStyle: toolbarTextStyle,
       titleTextStyle: titleTextStyle,
       systemOverlayStyle: systemOverlayStyle,
