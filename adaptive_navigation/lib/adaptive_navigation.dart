@@ -5,4 +5,5 @@
 library adaptive_navigation;
 
 export 'src/adaptive_app_bar.dart';
+export 'src/adaptive_floating_action_button.dart';
 export 'src/adaptive_navigation_scaffold.dart';
