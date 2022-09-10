@@ -90,7 +90,7 @@ class AdaptiveNavigationScaffold extends StatefulWidget {
   final Widget body;
 
   /// See [Scaffold.floatingActionButton].
-  final FloatingActionButton? floatingActionButton;
+  final Widget? floatingActionButton;
 
   /// See [Scaffold.floatingActionButtonLocation].
   ///
