@@ -5,12 +5,11 @@ class CustomScaffoldDemo extends StatefulWidget {
   const CustomScaffoldDemo({Key? key}) : super(key: key);
 
   @override
-  _CustomScaffoldDemoState createState() => _CustomScaffoldDemoState();
+  CustomScaffoldDemoState createState() => CustomScaffoldDemoState();
 }
 
-class _CustomScaffoldDemoState extends State<CustomScaffoldDemo> {
+class CustomScaffoldDemoState extends State<CustomScaffoldDemo> {
   int _destinationCount = 5;
-  bool _fabInRail = false;
   bool _includeBaseDestinationsInMenu = true;
 
   @override
@@ -18,10 +17,21 @@ class _CustomScaffoldDemoState extends State<CustomScaffoldDemo> {
     return AdaptiveNavigationScaffold(
       selectedIndex: 0,
       destinations: _allDestinations.sublist(0, _destinationCount),
-      appBar: AdaptiveAppBar(title: const Text('Custom Demo')),
+      appBarBuilder: (context, navigationType) {
+        switch(navigationType) {
+          case NavigationType.bottom :
+            return AppBar(title: const Text('Custom Demo'));
+          case NavigationType.drawer :
+            return AppBar(title: const Text('Custom Demo with drawer'));
+          default :
+            return null;
+        }
+      },
       body: _body(),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+      floatingActionButton: AdaptiveFloatingActionButton(
+        icon: const Icon(Icons.add),
+        label: const Text('Compose'),
+        isExtended: MediaQuery.of(context).size.width > 600 ? true : false,
         onPressed: () {},
       ),
       navigationTypeResolver: (context) {
@@ -31,7 +41,6 @@ class _CustomScaffoldDemoState extends State<CustomScaffoldDemo> {
           return NavigationType.bottom;
         }
       },
-      fabInRail: _fabInRail,
       includeBaseDestinationsInMenu: _includeBaseDestinationsInMenu,
     );
   }
@@ -60,16 +69,6 @@ class _CustomScaffoldDemoState extends State<CustomScaffoldDemo> {
             },
           ),
           const Text('Destination Count'),
-          const SizedBox(height: 40),
-          Switch(
-            value: _fabInRail,
-            onChanged: (value) {
-              setState(() {
-                _fabInRail = value;
-              });
-            },
-          ),
-          const Text('fabInRail'),
           const SizedBox(height: 40),
           Switch(
             value: _includeBaseDestinationsInMenu,

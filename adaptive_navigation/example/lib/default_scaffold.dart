@@ -9,12 +9,13 @@ class DefaultScaffoldDemo extends StatefulWidget {
   const DefaultScaffoldDemo({Key? key}) : super(key: key);
 
   @override
-  _DefaultScaffoldDemoState createState() => _DefaultScaffoldDemoState();
+  DefaultScaffoldDemoState createState() => DefaultScaffoldDemoState();
 }
 
-class _DefaultScaffoldDemoState extends State<DefaultScaffoldDemo> {
+class DefaultScaffoldDemoState extends State<DefaultScaffoldDemo> {
   int _destinationCount = 5;
   bool _fabInRail = false;
+  bool _fabInPermanentDrawer = false;
   bool _includeBaseDestinationsInMenu = true;
 
   @override
@@ -24,17 +25,25 @@ class _DefaultScaffoldDemoState extends State<DefaultScaffoldDemo> {
       destinations: _allDestinations.sublist(0, _destinationCount),
       appBar: AdaptiveAppBar(title: const Text('Default Demo')),
       body: _body(),
-      floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+      floatingActionButton: AdaptiveFloatingActionButton(
         onPressed: () {},
+        isExtended: true,
+        label: const Text('Compose'),
+        icon: const Icon(Icons.add),
       ),
+      drawerHeader: const DrawerHeader(
+        child: FlutterLogo(),
+      ),
+      permanentDrawerTrailing: _permanentDrawerTrailing(),
+      navigationRailTrailing: _navigationRailTrailing(),
       fabInRail: _fabInRail,
+      fabInPermanentDrawer: _fabInPermanentDrawer,
       includeBaseDestinationsInMenu: _includeBaseDestinationsInMenu,
     );
   }
 
   Widget _body() {
-    return Center(
+    return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -69,6 +78,16 @@ class _DefaultScaffoldDemoState extends State<DefaultScaffoldDemo> {
           const Text('fabInRail'),
           const SizedBox(height: 40),
           Switch(
+            value: _fabInPermanentDrawer,
+            onChanged: (value) {
+              setState(() {
+                _fabInPermanentDrawer = value;
+              });
+            },
+          ),
+          const Text('fabInPermanentDrawer'),
+          const SizedBox(height: 40),
+          Switch(
             value: _includeBaseDestinationsInMenu,
             onChanged: (value) {
               setState(() {
@@ -88,10 +107,56 @@ class _DefaultScaffoldDemoState extends State<DefaultScaffoldDemo> {
       ),
     );
   }
+
+  Widget _navigationRailTrailing() {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: const [
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: CircleAvatar(child: Icon(Icons.person)),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _permanentDrawerTrailing() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          const CircleAvatar(child: Icon(Icons.person)),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Joe',
+                  style: Theme.of(context).textTheme.bodyText1,
+                ),
+                Text(
+                  'Sign out',
+                  style: TextStyle(color: Theme.of(context).primaryColor),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
 }
 
 const _allDestinations = [
-  AdaptiveScaffoldDestination(title: 'Alarm', icon: Icons.alarm),
+  AdaptiveScaffoldDestination(
+    title: 'Alarm',
+    icon: Icons.alarm,
+    /// Optional parameter to use for navigation
+    path: '/alarm',
+  ),
   AdaptiveScaffoldDestination(title: 'Book', icon: Icons.book),
   AdaptiveScaffoldDestination(title: 'Cake', icon: Icons.cake),
   AdaptiveScaffoldDestination(title: 'Directions', icon: Icons.directions),
