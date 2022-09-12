@@ -34,7 +34,7 @@ class DefaultScaffoldDemoState extends State<DefaultScaffoldDemo> {
       drawerHeader: const DrawerHeader(
         child: FlutterLogo(),
       ),
-      permanentDrawerTrailing: _permanentDrawerTrailing(),
+      permanentDrawerFooter: _permanentDrawerFooter(),
       navigationRailTrailing: _navigationRailTrailing(),
       fabInRail: _fabInRail,
       fabInPermanentDrawer: _fabInPermanentDrawer,
@@ -122,7 +122,7 @@ class DefaultScaffoldDemoState extends State<DefaultScaffoldDemo> {
     );
   }
 
-  Widget _permanentDrawerTrailing() {
+  Widget _permanentDrawerFooter() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Row(

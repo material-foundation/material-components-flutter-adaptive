@@ -75,7 +75,7 @@ class AdaptiveNavigationScaffold extends StatefulWidget {
     this.appBarBuilder,
     this.drawerHeader,
     this.navigationRailTrailing,
-    this.permanentDrawerTrailing,
+    this.permanentDrawerFooter,
     this.fabInRail = true,
     this.fabInPermanentDrawer = true,
     this.includeBaseDestinationsInMenu = true,
@@ -177,10 +177,10 @@ class AdaptiveNavigationScaffold extends StatefulWidget {
   /// If null, then there is no trailing
   final Widget? navigationRailTrailing;
 
-  /// The trailing widget in the permanent drawer
+  /// The footer in the permanent drawer
   ///
-  /// If null, then there is no trailing
-  final Widget? permanentDrawerTrailing;
+  /// If null, then there is no footer
+  final Widget? permanentDrawerFooter;
 
   /// Whether the [floatingActionButton] is inside or the rail or in the regular
   /// spot.
@@ -431,8 +431,8 @@ class AdaptiveNavigationScaffoldState
                   ),
                 ),
               ),
-              if (widget.permanentDrawerTrailing != null)
-                widget.permanentDrawerTrailing!,
+              if (widget.permanentDrawerFooter != null)
+                widget.permanentDrawerFooter!,
             ],
           ),
         ),
