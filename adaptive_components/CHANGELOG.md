@@ -1,3 +1,7 @@
+## 0.0.8 - Sep 12, 2022
+
+- Bump `adaptive_breakpoints` and `adaptive_navigation` dependencies
+
 ## 0.0.7 - May 26, 2022
 
 - Fixed typo in pubspec description.
