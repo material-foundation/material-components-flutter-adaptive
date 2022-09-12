@@ -76,6 +76,7 @@ class AdaptiveNavigationScaffold extends StatefulWidget {
     this.drawerHeader,
     this.navigationRailTrailing,
     this.permanentDrawerFooter,
+    this.showVerticalDivider = false,
     this.fabInRail = true,
     this.fabInPermanentDrawer = true,
     this.includeBaseDestinationsInMenu = true,
@@ -172,7 +173,7 @@ class AdaptiveNavigationScaffold extends StatefulWidget {
   /// If null, then there is no header.
   final Widget? drawerHeader;
 
-  /// The trailing widget in the NavigationRail
+  /// The trailing widget in the [NavigationRail]
   ///
   /// If null, then there is no trailing
   final Widget? navigationRailTrailing;
@@ -181,6 +182,12 @@ class AdaptiveNavigationScaffold extends StatefulWidget {
   ///
   /// If null, then there is no footer
   final Widget? permanentDrawerFooter;
+
+  /// If true, shows a [VerticalDivider] of width 1 and thickness 1 between body
+  /// and [NavigationRail]/[PermanentDrawer]
+  ///
+  /// Defaults to false
+  final bool showVerticalDivider;
 
   /// Whether the [floatingActionButton] is inside or the rail or in the regular
   /// spot.
@@ -343,6 +350,11 @@ class AdaptiveNavigationScaffoldState
               selectedIndex: widget.selectedIndex,
               onDestinationSelected: widget.onDestinationSelected ?? (_) {},
             ),
+            if (widget.showVerticalDivider)
+              const VerticalDivider(
+                width: 1,
+                thickness: 1,
+              ),
             Expanded(
               child: Scaffold(
                 key: widget.key,
@@ -450,6 +462,11 @@ class AdaptiveNavigationScaffoldState
             ],
           ),
         ),
+        if (widget.showVerticalDivider)
+          const VerticalDivider(
+            width: 1,
+            thickness: 1,
+          ),
         Expanded(
           child: Scaffold(
             key: widget.key,
