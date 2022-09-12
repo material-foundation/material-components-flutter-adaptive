@@ -4,13 +4,14 @@
 - Add `AdaptiveNavigationScaffold.of(context)` method to provide its state to descendants.
 - Add `appBarBuilder` to build different AppBars depending on `NavigationType`.
 - Add `navigationRailTrailing` and `permanentDrawerFooter`.
+- Make the drawer scrollable.
 - `FAB` now can be inside `permanentDrawer` and is controlled by `fabInPermanentDrawer` property.
 - Add `railDestinationsOverflow` property.
 - Add `showVerticalDivider` to make the `VerticalDivider` between `body` and `NavigationRail/permanentDrawer` optional. 
 - Menu/Back button is now moved inside `NavigationRail` from the `AppBar` to be perfectly aligned with `NavigationRailDestinations`.
 - Make `floatingActionButton` type `Widget` not `FloatingActionButton` as it is in the `Scaffold`.
 - Add `AdaptiveFloatingActionButton`. This widget should be used to have an expanded FAB inside the permanent drawer.
-- Update examples, and use Material3 theming.
+- Update examples, and use Material 3 theming.
 - Update dependencies.
 
 ## 0.0.7 - May 23, 2022
