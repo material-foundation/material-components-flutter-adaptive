@@ -442,19 +442,17 @@ class AdaptiveNavigationScaffoldState
                   child: widget.floatingActionButton,
                 ),
               Expanded(
-                child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      for (final destination in widget.destinations)
-                        ListTile(
-                          leading: Icon(destination.icon),
-                          title: Text(destination.title),
-                          selected: widget.destinations.indexOf(destination) ==
-                              widget.selectedIndex,
-                          onTap: () => _destinationTapped(destination),
-                        ),
-                    ],
-                  ),
+                child: ListView(
+                  children: [
+                    for (final destination in widget.destinations)
+                      ListTile(
+                        leading: Icon(destination.icon),
+                        title: Text(destination.title),
+                        selected: widget.destinations.indexOf(destination) ==
+                            widget.selectedIndex,
+                        onTap: () => _destinationTapped(destination),
+                      ),
+                  ],
                 ),
               ),
               if (widget.permanentDrawerFooter != null)
