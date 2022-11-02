@@ -1,11 +1,13 @@
 ## 0.0.8 - Sep 12, 2022
 
-- Add path property to `AdaptiveScaffoldDestination` for simpler usage with routing.
+- Add `path` property to `AdaptiveScaffoldDestination` for simpler usage with routing.
+- Add `floatingActionButton` property to `AdaptiveScaffoldDestination` to provide custom FAB for each destination.
 - Add `AdaptiveNavigationScaffold.of(context)` method to provide its state to descendants.
+- Replace `BottomNavigationBar` with `NavigationBar` for `NavigationType.bottom`.
 - Add `appBarBuilder` to build different AppBars depending on `NavigationType`.
 - Add `navigationRailTrailing` and `permanentDrawerFooter`.
 - Make the drawer scrollable.
-- `FAB` now can be inside `permanentDrawer` and is controlled by `fabInPermanentDrawer` property.
+- FAB now can be inside `permanentDrawer` and is controlled by `fabInPermanentDrawer` property.
 - Add `railDestinationsOverflow` property.
 - Add `showVerticalDivider` to make the `VerticalDivider` between `body` and `NavigationRail/permanentDrawer` optional. 
 - Menu/Back button is now moved inside `NavigationRail` from the `AppBar` to be perfectly aligned with `NavigationRailDestinations`.
