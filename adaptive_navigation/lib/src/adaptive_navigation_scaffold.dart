@@ -29,7 +29,7 @@ enum NavigationType {
 }
 
 /// Used to configure items or destinations in the various navigation
-/// mechanism. For [BottomNavigationBar], see [BottomNavigationBarItem]. For
+/// mechanism. For [NavigationBar], see [NavigationDestination]. For
 /// [NavigationRail], see [NavigationRailDestination]. For [Drawer], see
 /// [ListTile].
 class AdaptiveScaffoldDestination {
@@ -45,7 +45,7 @@ class AdaptiveScaffoldDestination {
 }
 
 /// A widget that adapts to the current display size, displaying a [Drawer],
-/// [NavigationRail], or [BottomNavigationBar]. Navigation destinations are
+/// [NavigationRail], or [NavigationBar]. Navigation destinations are
 /// defined in the [destinations] parameter.
 class AdaptiveNavigationScaffold extends StatefulWidget {
   const AdaptiveNavigationScaffold({
@@ -280,17 +280,16 @@ class AdaptiveNavigationScaffoldState
       drawer: Navigator.of(context).canPop() || drawerDestinations.isEmpty
           ? null
           : _defaultDrawer(drawerDestinations),
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
+      bottomNavigationBar: NavigationBar(
+        destinations: [
           for (final destination in bottomDestinations)
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: Icon(destination.icon),
               label: destination.title,
             ),
         ],
-        currentIndex: widget.selectedIndex,
-        onTap: widget.onDestinationSelected ?? (_) {},
-        type: BottomNavigationBarType.fixed,
+        selectedIndex: widget.selectedIndex,
+        onDestinationSelected: widget.onDestinationSelected,
       ),
       floatingActionButton: widget.floatingActionButton,
       floatingActionButtonLocation: widget.floatingActionButtonLocation,
@@ -348,7 +347,7 @@ class AdaptiveNavigationScaffoldState
               ],
               trailing: widget.navigationRailTrailing,
               selectedIndex: widget.selectedIndex,
-              onDestinationSelected: widget.onDestinationSelected ?? (_) {},
+              onDestinationSelected: widget.onDestinationSelected,
             ),
             if (widget.showVerticalDivider)
               const VerticalDivider(
