@@ -36,11 +36,13 @@ class AdaptiveScaffoldDestination {
   final String title;
   final IconData icon;
   final String? path;
+  final Widget? floatingActionButton;
 
   const AdaptiveScaffoldDestination({
     required this.title,
     required this.icon,
     this.path,
+    this.floatingActionButton,
   });
 }
 
@@ -91,6 +93,8 @@ class AdaptiveNavigationScaffold extends StatefulWidget {
   final Widget body;
 
   /// See [Scaffold.floatingActionButton].
+  /// Ignored when a [AdaptiveScaffoldDestination.floatingActionButton]
+  /// is provided for the [selectedIndex]
   final Widget? floatingActionButton;
 
   /// See [Scaffold.floatingActionButtonLocation].
@@ -244,6 +248,10 @@ class AdaptiveNavigationScaffoldState
 
   PreferredSizeWidget? appBar;
 
+  Widget? _buildFloatingActionButton() =>
+      widget.destinations[widget.selectedIndex].floatingActionButton ??
+      widget.floatingActionButton;
+
   Drawer _defaultDrawer(List<AdaptiveScaffoldDestination> destinations) {
     return Drawer(
       child: ListView(
@@ -291,7 +299,7 @@ class AdaptiveNavigationScaffoldState
         selectedIndex: widget.selectedIndex,
         onDestinationSelected: widget.onDestinationSelected,
       ),
-      floatingActionButton: widget.floatingActionButton,
+      floatingActionButton: _buildFloatingActionButton(),
       floatingActionButtonLocation: widget.floatingActionButtonLocation,
       floatingActionButtonAnimator: widget.floatingActionButtonAnimator,
     );
@@ -333,8 +341,8 @@ class AdaptiveNavigationScaffoldState
                                     icon: const Icon(Icons.menu)),
                           ),
                         if (widget.fabInRail &&
-                            widget.floatingActionButton != null)
-                          widget.floatingActionButton!,
+                            _buildFloatingActionButton() != null)
+                          _buildFloatingActionButton()!,
                       ],
                     )
                   : null,
@@ -359,7 +367,7 @@ class AdaptiveNavigationScaffoldState
                 key: widget.key,
                 appBar: appBar,
                 floatingActionButton:
-                    widget.fabInRail ? null : widget.floatingActionButton,
+                    widget.fabInRail ? null : _buildFloatingActionButton(),
                 floatingActionButtonLocation:
                     widget.floatingActionButtonLocation,
                 floatingActionButtonAnimator:
@@ -407,7 +415,7 @@ class AdaptiveNavigationScaffoldState
           ],
         ),
       ),
-      floatingActionButton: widget.floatingActionButton,
+      floatingActionButton: _buildFloatingActionButton(),
       floatingActionButtonLocation: widget.floatingActionButtonLocation,
       floatingActionButtonAnimator: widget.floatingActionButtonAnimator,
       persistentFooterButtons: widget.persistentFooterButtons,
@@ -435,10 +443,10 @@ class AdaptiveNavigationScaffoldState
             children: [
               if (widget.drawerHeader != null) widget.drawerHeader!,
               if (widget.fabInPermanentDrawer &&
-                  widget.floatingActionButton != null)
+                  _buildFloatingActionButton() != null)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
-                  child: widget.floatingActionButton,
+                  child: _buildFloatingActionButton(),
                 ),
               Expanded(
                 child: ListView(
@@ -471,7 +479,7 @@ class AdaptiveNavigationScaffoldState
             body: widget.body,
             floatingActionButton: widget.fabInPermanentDrawer
                 ? null
-                : widget.floatingActionButton,
+                : _buildFloatingActionButton(),
             floatingActionButtonLocation: widget.floatingActionButtonLocation,
             floatingActionButtonAnimator: widget.floatingActionButtonAnimator,
             persistentFooterButtons: widget.persistentFooterButtons,
