@@ -190,7 +190,6 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: [
-          // TODO: Find a better way to write `drawerHeader!`
           if (drawerHeader != null) drawerHeader!,
           for (int i = 0; i < destinations.length; i++)
             ListTile(
@@ -305,7 +304,6 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
       drawer: Drawer(
         child: Column(
           children: [
-            // TODO: Find a better way to write `drawerHeader!`
             if (drawerHeader != null) drawerHeader!,
             for (final destination in destinations)
               ListTile(
@@ -344,7 +342,6 @@ class AdaptiveNavigationScaffold extends StatelessWidget {
         Drawer(
           child: Column(
             children: [
-              // TODO: Find a better way to write `drawerHeader!`
               if (drawerHeader != null) drawerHeader!,
               for (final destination in destinations)
                 ListTile(
